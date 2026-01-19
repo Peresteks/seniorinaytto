@@ -6,7 +6,7 @@ body {
       justify-content: center;
       align-items: center;
       background: #000;
-      color: #fff;
+      color: rgb(255, 255, 255);
       font-family: "Nunito", sans-serif;
       text-align: center;
     }
@@ -22,13 +22,33 @@ html {
   font-family: Nunito, sans-serif;
 }
 
+.wakelock-toggle {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.wakelock-toggle input {
+  margin-right: 5px;
+}
+
     .weekday {
-      font-size: 4rem;
+      font-size: 6rem;
       font-weight: bold;
     }
 
+    .daytime {
+      font-size: 6rem;
+      margin-top: 0.3rem;
+      font-weight: bold;
+    }
+
+
     .date {
-      font-size: 2.5rem;
+      font-size: 4rem;
       margin-top: 0.5rem;
     }
 

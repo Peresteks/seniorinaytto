@@ -10,18 +10,35 @@
 
   <body>
 
+<label class="wakelock-toggle">
+  <input type="checkbox" id="wakelockCheckbox">
+  Pidä näyttö päällä
+</label>
+
     <div class="weekday" id="weekday"></div>
+    <div class="daytime" id="daytime"></div>
   <div class="date" id="date"></div>
-  <div class="time" id="time"></div>
+  <div class="time" id="time"><p>Kello on</p></div>
 
     <script>
-        function updateClock() {
+        function getDaytime(hours) {
+      if (hours >= 5 && hours <= 9) return "aamu";
+      if (hours === 10) return "aamupäivä";
+      if (hours >= 11 && hours <= 12) return "päivä";
+      if (hours >= 13 && hours <= 17) return "iltapäivä";
+      if (hours >= 18 && hours <= 21) return "ilta";
+      return "yö"; // 22–4
+    }
+
+    function updateClock() {
       const now = new Date();
+      const hours = now.getHours();
 
       const weekday = now.toLocaleDateString('fi-FI', { weekday: 'long' });
       const date = now.toLocaleDateString('fi-FI', {
         day: 'numeric',
-        month: 'long'
+        month: 'long',
+        year: 'numeric'
       });
 
       const time = now.toLocaleTimeString('fi-FI', {
@@ -30,14 +47,44 @@
       });
 
       document.getElementById('weekday').textContent =
-        weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  weekday.charAt(0).toUpperCase() + weekday.slice(1) + "-";
+
+      document.getElementById('daytime').textContent =
+        getDaytime(hours);
 
       document.getElementById('date').textContent = date;
-      document.getElementById('time').textContent = time;
+      document.getElementById('time').textContent = "Kello on " + time;
     }
 
     updateClock();
     setInterval(updateClock, 1000);
+
+    let wakeLock = null;
+
+async function enableWakeLock() {
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    console.log("Wake lock päällä");
+  } catch (err) {
+    console.error("Wake lock ei onnistunut:", err);
+  }
+}
+
+function disableWakeLock() {
+  if (wakeLock) {
+    wakeLock.release();
+    wakeLock = null;
+    console.log("Wake lock pois päältä");
+  }
+}
+
+document.getElementById('wakelockCheckbox').addEventListener('change', function () {
+  if (this.checked) {
+    enableWakeLock();
+  } else {
+    disableWakeLock();
+  }
+});
     </script>
 
   </body>
